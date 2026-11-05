@@ -224,6 +224,15 @@
     }
     return result;
   }
+  function updateCooldown(state, now = Date.now()) {
+    const previousDuration = state.cooldownDuration;
+    const nextDuration = effects(state).cooldownMs;
+    if (nextDuration !== previousDuration && previousDuration > 0 && state.cooldownEndsAt > now) {
+      // Preserve progress: scale the remaining time, including when removing speed.
+      state.cooldownEndsAt = now + (state.cooldownEndsAt - now) * nextDuration / previousDuration;
+    }
+    state.cooldownDuration = nextDuration;
+  }
   function remainingMs(state, now = Date.now()) { return Math.max(0, state.cooldownEndsAt - now); }
   function roll(state, now = Date.now(), rng = Math.random) {
     if (state.bag.length >= BAG_CAPACITY) fail('背包已满，请先装备或删除一条词缀。', 'BAG_FULL');
@@ -275,7 +284,7 @@
     if (!Number.isInteger(index) || index < 0 || index >= slots.length) fail('装备槽不存在。', 'BAD_SLOT');
     return slots;
   }
-  function equip(state, affixId, group, index) {
+  function equip(state, affixId, group, index, now = Date.now()) {
     const slots = validSlot(state, group, index);
     const bagIndex = state.bag.findIndex(affix => affix.id === affixId);
     if (bagIndex < 0) fail('背包里找不到这条词缀。', 'MISSING_AFFIX');
@@ -283,20 +292,23 @@
     const outgoing = slots[index];
     state.bag.splice(bagIndex, 1);
     slots[index] = incoming;
+    updateCooldown(state, now);
     return { incoming, outgoing };
   }
-  function swap(state, fromGroup, fromIndex, toGroup, toIndex) {
+  function swap(state, fromGroup, fromIndex, toGroup, toIndex, now = Date.now()) {
     const from = validSlot(state, fromGroup, fromIndex);
     const to = validSlot(state, toGroup, toIndex);
     [from[fromIndex], to[toIndex]] = [to[toIndex], from[fromIndex]];
+    updateCooldown(state, now);
   }
-  function unequip(state, group, index) {
+  function unequip(state, group, index, now = Date.now()) {
     const slots = validSlot(state, group, index);
     if (!slots[index]) fail('这个槽位是空的。', 'EMPTY_SLOT');
     if (state.bag.length >= BAG_CAPACITY) fail('背包已满，请先整理背包。', 'BAG_FULL');
     const affix = slots[index];
     state.bag.push(affix);
     slots[index] = null;
+    updateCooldown(state, now);
     return affix;
   }
   function remove(state, id) {
@@ -323,7 +335,7 @@
       ceiling: [...state.active, ...state.protected].some(affix => affix && affix.strength >= 830)
     };
   }
-  function upgrade(state, name, sacrificeId) {
+  function upgrade(state, name, sacrificeId, now = Date.now()) {
     if (!Object.hasOwn(state.upgrades, name)) fail('升级不存在。', 'BAD_UPGRADE');
     if (state.upgrades[name]) fail('这项升级已经完成。', 'ALREADY_UPGRADED');
     if (!upgradeStatus(state)[name]) fail('尚未满足这项升级的条件。', 'UPGRADE_LOCKED');
@@ -334,6 +346,7 @@
       state.protected.push(null);
     }
     state.upgrades[name] = true;
+    updateCooldown(state, now);
   }
 
   function hydrate(raw, now = Date.now()) {
@@ -381,6 +394,7 @@
     result.lastRoll = raw.lastRoll ? parseEntry(raw.lastRoll) : null;
     result.settings.sound = raw.settings?.sound === true;
     result.savedAt = Number.isFinite(raw.savedAt) && raw.savedAt >= 0 ? raw.savedAt : now;
+    updateCooldown(result, now);
     return result;
   }
 
@@ -631,12 +645,13 @@
       const seconds = Math.ceil(remaining / 1000);
       $('#roll-time').textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
     } else $('#roll-time').textContent = `${(E.effects(state).cooldownMs / 1000).toFixed(2).replace(/\.00$/, '')}s`;
-    const progress = state.cooldownDuration > 0 ? Math.min(100, Math.max(0, (1 - remaining / state.cooldownDuration) * 100)) : 100;
+    const duration = E.effects(state).cooldownMs;
+    const progress = duration > 0 ? Math.min(100, Math.max(0, (1 - remaining / duration) * 100)) : 100;
     $('#cooldown-track').classList.toggle('visible', cooldown);
     $('#cooldown-track').setAttribute('aria-valuenow', Math.round(progress));
     $('#cooldown-fill').style.width = `${progress}%`;
     $('#forge-hint').classList.toggle('warning', full);
-    const hint = full ? '背包已满 · 装备或删除词缀后继续' : cooldown ? '冷却继续计时 · 可以自由调整配装' : '每次重洗后进入冷却 · 试试空格键';
+    const hint = full ? '背包已满 · 装备或删除词缀后继续' : cooldown ? '快洗实时生效 · 脱下即撤去加成' : '每次重洗后进入冷却 · 试试空格键';
     const hintTarget = $('#forge-hint span');
     if (hintTarget.textContent !== hint) hintTarget.textContent = hint;
   }
@@ -733,7 +748,7 @@
   }
   function openRules() {
     const blocks = [
-      ['重洗与冷却', '每次点击「重洗词缀」，随机获得一条词缀并放入背包，随后进入基础 200 秒冷却。强度以 0.01 为单位，在当前有效区间内等概率抽取。快洗与冷却升级会缩短之后每次重洗的冷却；已经开始的冷却按开始时的配装计时。'],
+      ['重洗与冷却', '每次点击「重洗词缀」，随机获得一条词缀并放入背包，随后进入基础 200 秒冷却。强度以 0.01 为单位，在当前有效区间内等概率抽取。快洗放入装备槽立即生效，脱下或换到保护槽立即撤去加成。更换配装时，剩余冷却按新旧总冷却的比例调整，已完成的进度比例保持不变。例：剩余 180 秒时装备快洗 6.00，剩余变为 180 × 0.70 = 126 秒；若带着这条快洗还剩 120 秒，脱下后变为 120 ÷ 0.70 ≈ 171.43 秒。冷却升级立即使剩余时间额外 ×0.80；已结束的冷却保持结束。'],
       ['装备与保护', '三个装备槽中的词缀生效；初始两个保护槽可存放词缀。选中已有槽内词缀，再点任意另一个槽即可互换，包括装备槽与保护槽。选中槽内词缀后，可以点击「卸下」放回背包。'],
       ['整理你的背包', '背包最多容纳 15 条词缀。点击词缀，再点击「装备」，选择装备槽或保护槽；若目标已有词缀，原词缀会直接消失。槽位之间可互换词缀。点击「删除」移除所选词缀，12 秒内可撤销。背包满时需先整理，再继续重洗。'],
       ['三项永久升级', '① 消耗背包内一条强度 ≥ 7.70 的词缀，保护槽从 2 个增加到 3 个。② 累计重洗达到 500 次，免费将冷却乘以 0.80。③ 装备槽或保护槽内有强度 ≥ 8.30 的词缀时，免费增加基础上限 0.50。三项升级各限一次，升级后永久保留。'],
@@ -868,7 +883,7 @@
     const target = event.target.closest('[data-upgrade]');
     if (!target || target.disabled) return;
     if (target.dataset.upgrade === 'protection') openSacrifice();
-    else if (act(() => E.upgrade(state, target.dataset.upgrade), target.dataset.upgrade === 'cooldown' ? '熟能生巧：此后重洗冷却额外 ×0.80。' : '更高的可能：基础强度上限永久 +0.50。')) playSound('success');
+    else if (act(() => E.upgrade(state, target.dataset.upgrade), target.dataset.upgrade === 'cooldown' ? '熟能生巧：重洗冷却永久 ×0.80，当前冷却已更新。' : '更高的可能：基础强度上限永久 +0.50。')) playSound('success');
   });
   document.addEventListener('click', event => { const target = event.target.closest('[data-action]'); if (target) handleAction(target.dataset.action); });
   $('#close-modal').addEventListener('click', closeModal);
