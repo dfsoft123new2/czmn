@@ -19,6 +19,8 @@
 @media(max-width:360px){h1{font-size:20px}.intro-stats strong{font-size:22px}.workspace{padding-left:12px;padding-right:12px}.panel-heading{padding-left:16px;padding-right:16px}.slots,.slot-section-label,.bag-grid{margin-left:16px;margin-right:16px}.slot-effect{font-size:8px}.bag-cell .affix-strength{font-size:18px}.bag-grid{gap:6px}.bag-toolbar{padding:11px 14px}.bag-toolbar>span{max-width:133px;font-size:8px}.type-option{gap:4px;padding:8px}.next-roll div{flex-direction:column;align-items:flex-start;gap:2px}}
 .settings-links{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:17px 0;border-bottom:1px solid var(--line)}.settings-links button{display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0;color:#9d8c72}.settings-links .icon{width:15px;height:15px}.settings-links .icon:last-child{margin-left:auto;width:12px;height:12px}.settings-links button:hover{color:var(--accent)}
 @media(max-width:650px){.right-column{align-items:stretch}.right-column .effects-panel,.right-column .upgrades-panel{width:100%}}
+.lucky233-icon{color:#b48c4a;background:#faf0d9;border-color:#ebd9b2}.lucky233-icon>.icon{width:20px;height:20px;transform:translateY(-5px)}.lucky233-icon>b{position:absolute;bottom:6px;font-size:9px;font-weight:600;letter-spacing:.12em;line-height:1}.tag-233{color:#b18a42;background:#f7edcf}#item-233.unlocked .lucky233-icon{box-shadow:0 0 14px #d2af5b22}.permanent-affixes{margin:17px 23px 0;padding:12px;border:1px solid #eee0c0;border-radius:9px;background:#fdf9ee}.permanent-affixes[hidden]{display:none}.permanent-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;font-size:9px;color:#a28a58}.permanent-heading>span:first-child{display:flex;align-items:center;gap:5px}.permanent-heading .icon{width:12px;height:12px}.permanent-heading>span:last-child{font-size:8px;color:#b9a985}.permanent-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.permanent-chip{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid var(--type-border);border-radius:6px;background:var(--type-bg);color:var(--type-color);font-size:10px}.permanent-chip>.icon{width:15px;height:15px}.permanent-chip>strong{margin-left:auto;font-size:15px;font-weight:550;line-height:1.5;font-variant-numeric:tabular-nums}
+@media(max-width:850px){.permanent-affixes{margin-left:17px;margin-right:17px}}@media(max-width:650px){.permanent-affixes{margin-left:21px;margin-right:21px}.permanent-heading{font-size:10px}.permanent-heading>span:last-child{font-size:9px}.permanent-chip{font-size:11px;padding:9px 10px}.permanent-chip>strong{font-size:17px}}@media(max-width:360px){.permanent-affixes{margin-left:16px;margin-right:16px;padding:10px}.permanent-list{gap:7px}.permanent-chip{gap:5px;padding:8px}.permanent-chip>strong{font-size:16px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <!-- INLINE_STYLES_END -->
@@ -101,16 +103,18 @@
           <div class="panel-heading compact"><h2 id="items-heading">幸运道具</h2><span class="muted small">好运，也可以主动一点</span></div>
           <div class="item-row"><span class="item-icon class25-icon"><svg class="icon"><use href="#i-graduate"/></svg><span>25</span></span><div class="item-info"><div><strong>25届</strong><span class="tag" id="class25-badge">未解锁</span></div><p>下次指定词缀概率 +20%</p><small>每次重洗 1% 解锁 · 永久可用</small></div><button class="small-button" id="use-class25" disabled>使用</button></div>
           <div class="item-row"><span class="item-icon choice-icon"><svg class="icon"><use href="#i-ticket"/></svg></span><div class="item-info"><div><strong>自选卡</strong><span class="item-count">× <span id="choice-count">0</span></span></div><p>指定下一次重洗的词缀类型</p><small>每次重洗 10% 获得一张</small></div><button class="small-button" id="use-choice" disabled>使用</button></div>
+          <div class="item-row" id="item-233"><span class="item-icon lucky233-icon"><svg class="icon"><use href="#i-sparkles"/></svg><b>233</b></span><div class="item-info"><div><strong>233</strong><span class="tag" id="lucky233-badge">未获得</span></div><p>永久保点 6.00 · 优洗 6.00</p><small>每次重洗 0.1% 获得 · 不占装备槽</small></div></div>
         </section>
       </div>
 
       <div class="column center-column">
         <section class="panel equipment-panel" id="equipment-panel" aria-labelledby="equipment-heading">
-          <div class="panel-heading"><div class="heading-line"><h2 id="equipment-heading">我的配装</h2><span class="tag tag-green">仅装备槽生效</span></div><svg class="icon muted"><use href="#i-grid"/></svg></div>
+          <div class="panel-heading"><div class="heading-line"><h2 id="equipment-heading">我的配装</h2><span class="tag tag-green">装备槽生效</span></div><svg class="icon muted"><use href="#i-grid"/></svg></div>
           <div class="slot-section-label"><span><span class="small-dot"></span>装备槽</span><span>ACTIVE SLOTS <b>03</b></span></div>
           <div class="slots active-slots" id="active-slots"></div>
           <div class="slot-section-label protection-label"><span><svg class="icon"><use href="#i-shield"/></svg>保护槽</span><span id="protected-count">SAFE SLOTS <b>02</b></span></div>
           <div class="slots protected-slots" id="protected-slots"></div>
+          <div class="permanent-affixes" id="permanent-affixes" aria-label="233永久词缀" hidden></div>
           <div class="equipment-tip" id="equipment-tip"><svg class="icon"><use href="#i-swap"/></svg><span>点选一个已装备词缀，再点另一槽位即可交换。</span></div>
         </section>
 
@@ -170,6 +174,10 @@
   const TYPE_MAP = Object.freeze(Object.fromEntries(TYPES.map(type => [type.id, type])));
   const validType = value => typeof value === 'string' && Object.hasOwn(TYPE_MAP, value);
   const MULTIPLIERS = ['damage', 'usage', 'capacity', 'conversion', 'points'];
+  const LUCKY233_AFFIXES = Object.freeze([
+    Object.freeze({ type: 'preserve', strength: 600, source: '233' }),
+    Object.freeze({ type: 'quality', strength: 600, source: '233' })
+  ]);
 
   class GameError extends Error {
     constructor(message, code) { super(message); this.name = 'GameError'; this.code = code; }
@@ -181,18 +189,19 @@
       bag: [], active: [null, null, null], protected: [null, null],
       totalRolls: 0, nextId: 1, cooldownEndsAt: 0, cooldownStartedAt: 0, cooldownDuration: BASE_COOLDOWN_MS,
       upgrades: { protection: false, cooldown: false, ceiling: false },
-      items: { class25: false, choiceCards: 0 },
+      items: { class25: false, choiceCards: 0, lucky233: false },
       pending: { boostedType: null, forcedType: null },
       lastRoll: null, history: [],
       settings: { sound: false }, savedAt: 0
     };
   }
+  function permanentAffixes(state) { return state.items.lucky233 ? LUCKY233_AFFIXES : []; }
   function effects(state) {
     const multipliers = Object.fromEntries(MULTIPLIERS.map(type => [type, 1]));
     let minCents = 100;
     let maxCents = 600 + (state.upgrades.ceiling ? 50 : 0);
     let cooldownMultiplier = state.upgrades.cooldown ? 0.8 : 1;
-    for (const affix of state.active) {
+    for (const affix of [...state.active, ...permanentAffixes(state)]) {
       if (!affix) continue;
       const value = affix.strength / 100;
       if (MULTIPLIERS.includes(affix.type)) multipliers[affix.type] *= value;
@@ -236,8 +245,10 @@
     const strength = currentEffects.minCents + Math.floor(random() * (currentEffects.maxCents - currentEffects.minCents + 1));
     const gotClass25 = random() < 0.01;
     const gotChoice = random() < 0.1;
+    const gotLucky233 = random() < 0.001;
     const affix = { id: `affix-${state.nextId}`, type: chosenType, strength, createdAt: now };
     const newlyUnlocked = gotClass25 && !state.items.class25;
+    const lucky233Unlocked = gotLucky233 && !state.items.lucky233;
     state.nextId += 1;
     state.totalRolls += 1;
     state.bag.push(affix);
@@ -247,7 +258,9 @@
     state.pending = { boostedType: null, forcedType: null };
     if (gotClass25) state.items.class25 = true;
     if (gotChoice) state.items.choiceCards += 1;
-    const entry = { ...affix, rollNumber: state.totalRolls, choiceDrop: gotChoice, class25Drop: gotClass25, class25Unlocked: newlyUnlocked };
+    if (gotLucky233) state.items.lucky233 = true;
+    const entry = { ...affix, rollNumber: state.totalRolls, choiceDrop: gotChoice, class25Drop: gotClass25, class25Unlocked: newlyUnlocked,
+      lucky233Drop: gotLucky233, lucky233Unlocked };
     state.lastRoll = entry;
     state.history.unshift(entry);
     state.history = state.history.slice(0, 100);
@@ -344,13 +357,14 @@
     result.protected = raw.protected.map(item => item === null ? null : parseAffix(item));
     if (!isInt(raw.totalRolls, 0, 1e9) || !isInt(raw.nextId, 1, 1e9 + 1)
         || !raw.items || typeof raw.items.class25 !== 'boolean' || !isInt(raw.items.choiceCards, 0, 1e9)
+        || (raw.items.lucky233 !== undefined && typeof raw.items.lucky233 !== 'boolean')
         || !raw.pending || (raw.pending.boostedType !== null && !validType(raw.pending.boostedType))
         || (raw.pending.forcedType !== null && !validType(raw.pending.forcedType))) fail('存档的重洗或道具数据无效。', 'INVALID_SAVE');
     if (raw.pending.boostedType && !raw.items.class25) fail('25届尚未解锁。', 'INVALID_SAVE');
     result.totalRolls = raw.totalRolls;
     const highestId = Math.max(0, ...Array.from(ids, id => Number(id.slice(6))));
     result.nextId = Math.max(raw.nextId, highestId + 1);
-    result.items = { class25: raw.items.class25, choiceCards: raw.items.choiceCards };
+    result.items = { class25: raw.items.class25, choiceCards: raw.items.choiceCards, lucky233: raw.items.lucky233 === true };
     result.pending = { boostedType: raw.pending.boostedType, forcedType: raw.pending.forcedType };
     if (!isInt(raw.cooldownDuration, 0, BASE_COOLDOWN_MS) || !Number.isFinite(raw.cooldownStartedAt) || raw.cooldownStartedAt < 0
         || !Number.isFinite(raw.cooldownEndsAt) || raw.cooldownEndsAt < raw.cooldownStartedAt
@@ -361,7 +375,8 @@
     if (!Array.isArray(raw.history)) fail('重洗记录无效。', 'INVALID_SAVE');
     const parseEntry = value => ({ ...parseAffix(value, false),
       rollNumber: isInt(value.rollNumber, 1, result.totalRolls) ? value.rollNumber : result.totalRolls,
-      choiceDrop: value.choiceDrop === true, class25Drop: value.class25Drop === true, class25Unlocked: value.class25Unlocked === true });
+      choiceDrop: value.choiceDrop === true, class25Drop: value.class25Drop === true, class25Unlocked: value.class25Unlocked === true,
+      lucky233Drop: value.lucky233Drop === true, lucky233Unlocked: value.lucky233Unlocked === true });
     result.history = raw.history.slice(0, 100).map(parseEntry);
     result.lastRoll = raw.lastRoll ? parseEntry(raw.lastRoll) : null;
     result.settings.sound = raw.settings?.sound === true;
@@ -370,7 +385,7 @@
   }
 
   return Object.freeze({ VERSION, BAG_CAPACITY, BASE_COOLDOWN_MS, TYPES, TYPE_MAP, MULTIPLIERS,
-    GameError, createState, effects, probabilities, remainingMs, roll, equip, swap, unequip, remove,
+    GameError, createState, permanentAffixes, effects, probabilities, remainingMs, roll, equip, swap, unequip, remove,
     useClass25, useChoiceCard, upgradeStatus, upgrade, hydrate });
 });
 </script>
@@ -501,6 +516,9 @@
     $('#protected-slots').innerHTML = renderSlots('protected');
     $('#protected-slots').classList.toggle('has-three', state.protected.length === 3);
     $('#protected-count').innerHTML = `SAFE SLOTS <b>0${state.protected.length}</b>`;
+    const permanent = E.permanentAffixes(state);
+    $('#permanent-affixes').hidden = permanent.length === 0;
+    $('#permanent-affixes').innerHTML = permanent.length ? `<div class="permanent-heading"><span>${icon('sparkles')}233 · 永久词缀</span><span>不占装备槽</span></div><div class="permanent-list">${permanent.map(affix => `<div class="permanent-chip tone-${E.TYPE_MAP[affix.type].color}">${icon(E.TYPE_MAP[affix.type].icon)}<span>${E.TYPE_MAP[affix.type].name}</span><strong>${strength(affix)}</strong></div>`).join('')}</div>` : '';
     const tip = $('#equipment-tip');
     tip.classList.toggle('is-active', !!selection && (equipMode || selection.source !== 'bag'));
     if (equipMode) {
@@ -542,10 +560,10 @@
       const active = state.active.some(affix => affix?.type === typeId);
       return `<div class="effect-row${active ? ' lit' : ''}"><span>${icon(type.icon)}${type.name}</span><strong>× ${fixed(effects.multipliers[typeId])}</strong></div>`;
     }).join('');
-    const preserves = state.active.filter(affix => affix?.type === 'preserve');
+    const preserves = [...state.active, ...E.permanentAffixes(state)].filter(affix => affix?.type === 'preserve');
     if (preserves.length) html += `<div class="effect-row lit"><span>${icon('shield')}保点强度</span><strong>${preserves.map(strength).join(' / ')}</strong></div>`;
     $('#effect-list').innerHTML = html;
-    $('#effects-note').textContent = state.active.some(Boolean) ? `已激活 ${state.active.filter(Boolean).length} 条词缀 · 保护槽仅保存词缀` : '装备词缀，点亮你的第一项加成。';
+    $('#effects-note').textContent = state.items.lucky233 ? `233 永久加成已生效 · 装备槽已用 ${state.active.filter(Boolean).length} / 3` : state.active.some(Boolean) ? `已激活 ${state.active.filter(Boolean).length} 条词缀 · 保护槽仅保存词缀` : '装备词缀，点亮你的第一项加成。';
   }
   function renderItems() {
     $('#class25-badge').textContent = state.items.class25 ? '永久可用' : '未解锁';
@@ -555,6 +573,9 @@
     $('#choice-count').textContent = state.items.choiceCards;
     $('#use-choice').disabled = state.items.choiceCards < 1 || !!state.pending.forcedType;
     $('#use-choice').textContent = state.pending.forcedType ? '已使用' : '使用';
+    $('#lucky233-badge').textContent = state.items.lucky233 ? '永久生效' : '未获得';
+    $('#lucky233-badge').classList.toggle('tag-233', state.items.lucky233);
+    $('#item-233').classList.toggle('unlocked', state.items.lucky233);
     const next = $('#next-roll');
     next.classList.toggle('is-active', !!state.pending.forcedType || !!state.pending.boostedType);
     if (state.pending.forcedType) next.innerHTML = `${icon('ticket', 'mini-spark')}<div><strong>下次必出「${E.TYPE_MAP[state.pending.forcedType].name}」</strong><span>自选卡已使用 · 强度仍随机</span></div>`;
@@ -648,6 +669,8 @@
         if (entry.class25Unlocked) toast('幸运降临！25届已永久解锁。');
         else if (entry.class25Drop) toast('再次遇见25届，永久使用资格已保留。');
         if (entry.choiceDrop) toast('额外获得自选卡 ×1');
+        if (entry.lucky233Unlocked) toast('获得233！永久保点 6.00 与优洗 6.00 已生效。');
+        else if (entry.lucky233Drop) toast('再次获得233，永久加成已保留。');
       }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 80 : 680);
     } catch (error) { toast(error.message, true); renderTimer(); }
   }
@@ -706,7 +729,7 @@
     const details = {
       damage: '伤害效果 = 强度，多个伤害词缀的倍率相乘。', usage: '使用效果 = 强度，多个使用词缀的倍率相乘。', capacity: '产能效果 = 强度，多个产能词缀的倍率相乘。', conversion: '转效效果 = 强度，多个转效词缀的倍率相乘。', preserve: '只显示词缀强度。', points: '点增效果 = 强度，多个点增词缀的倍率相乘。', breakthrough: '强度上限增加 0.1 × 强度，多个突破的增加值相加。', quality: '强度下限增加 0.2 × 强度，多个优洗的增加值相加。', speed: '冷却 × (1 − 0.05 × 强度)，多个快洗的冷却系数相乘。'
     };
-    openModal('glossary', '九种词缀，九种可能', `<p class="modal-lead">初始强度区间为 1.00—6.00，所有类型基础概率相同。只有三个装备槽内的词缀参与效果计算。</p>${E.TYPES.map(type => `<div class="glossary-row tone-${type.color}"><span>${icon(type.icon)}${type.name}</span><span>${details[type.id]}</span><span>${type.id === 'preserve' ? '仅强度' : ['quality', 'breakthrough'].includes(type.id) ? '加算' : '乘算'}</span></div>`).join('')}<div class="callout">举个例子：同时装备两条强度 6.00 的快洗，重洗冷却为 200 × 0.70 × 0.70 = 98.00 秒。若完成冷却升级，再乘以 0.80。</div>`);
+    openModal('glossary', '九种词缀，九种可能', `<p class="modal-lead">初始强度区间为 1.00—6.00，所有类型基础概率相同。装备槽内的词缀与233附带的永久词缀参与效果计算。</p>${E.TYPES.map(type => `<div class="glossary-row tone-${type.color}"><span>${icon(type.icon)}${type.name}</span><span>${details[type.id]}</span><span>${type.id === 'preserve' ? '仅强度' : ['quality', 'breakthrough'].includes(type.id) ? '加算' : '乘算'}</span></div>`).join('')}<div class="callout">举个例子：同时装备两条强度 6.00 的快洗，重洗冷却为 200 × 0.70 × 0.70 = 98.00 秒。若完成冷却升级，再乘以 0.80。</div>`);
   }
   function openRules() {
     const blocks = [
@@ -715,6 +738,7 @@
       ['整理你的背包', '背包最多容纳 15 条词缀。点击词缀，再点击「装备」，选择装备槽或保护槽；若目标已有词缀，原词缀会直接消失。槽位之间可互换词缀。点击「删除」移除所选词缀，12 秒内可撤销。背包满时需先整理，再继续重洗。'],
       ['三项永久升级', '① 消耗背包内一条强度 ≥ 7.70 的词缀，保护槽从 2 个增加到 3 个。② 累计重洗达到 500 次，免费将冷却乘以 0.80。③ 装备槽或保护槽内有强度 ≥ 8.30 的词缀时，免费增加基础上限 0.50。三项升级各限一次，升级后永久保留。'],
       ['25届与自选卡', '每次重洗，25届有 1% 概率掉落；首次获得后永久解锁，无消耗使用，可指定下次某类词缀的概率增加 20 个百分点（11.11% → 31.11%）。每次重洗另有 10% 概率获得一张自选卡，使用时消耗一张，指定下次必出的词缀类型。两种掉落独立计算，可同时获得。自选卡优先，两种设置均在下一次成功重洗后重置。'],
+      ['233 · 永久的好运', '每次成功重洗独立有 0.1% 概率获得233，可与其他道具同时掉落。首次获得后，自动永久附带一条保点 6.00 和一条优洗 6.00，不占装备槽、保护槽或背包。保点只显示强度；优洗额外增加强度下限 1.20，与装备槽中的优洗加算。永久词缀固定生效，不能移动或删除；重复获得233不叠加。'],
       ['存档与快捷键', '每次操作都会在当前浏览器自动保存，离线或关闭页面后冷却继续。请在「设置与存档」中导出备份，换浏览器时可导入继续。空格键重洗，Delete 删除所选背包词缀，Esc 取消选择或关闭弹窗。']
     ];
     openModal('rules', '欢迎来到你的词缀工坊', blocks.map((block, index) => `<div class="rule-block"><h3><span>${index + 1}</span>${block[0]}</h3><p>${block[1]}</p></div>`).join(''));
@@ -724,7 +748,7 @@
     const quality = active.filter(affix => affix.type === 'quality');
     const breakthrough = active.filter(affix => affix.type === 'breakthrough');
     const effects = E.effects(state);
-    openModal('range', '你的强度区间，如何计算？', `<div class="rule-block"><h3>当前下限 · ${fixed(effects.minCents / 100)}</h3><p>基础 1.00${quality.map(affix => ` + 优洗 ${strength(affix)} × 0.20`).join('')}${quality.length ? '' : '，装备优洗可提高下限'}。</p></div><div class="rule-block"><h3>当前上限 · ${fixed(effects.maxCents / 100)}</h3><p>基础 6.00${breakthrough.map(affix => ` + 突破 ${strength(affix)} × 0.10`).join('')}${state.upgrades.ceiling ? ' + 升级 0.50' : ''}${breakthrough.length || state.upgrades.ceiling ? '' : '，装备突破可提高上限'}。</p></div><div class="callout">词缀强度保留两位小数，抽取范围取计算区间内可达到的 0.01 刻度。保护槽中的词缀仅保存；放入装备槽后参与计算。</div>`);
+    openModal('range', '你的强度区间，如何计算？', `<div class="rule-block"><h3>当前下限 · ${fixed(effects.minCents / 100)}</h3><p>基础 1.00${state.items.lucky233 ? ' + 233永久优洗 6.00 × 0.20' : ''}${quality.map(affix => ` + 优洗 ${strength(affix)} × 0.20`).join('')}${quality.length || state.items.lucky233 ? '' : '，装备优洗可提高下限'}。</p></div><div class="rule-block"><h3>当前上限 · ${fixed(effects.maxCents / 100)}</h3><p>基础 6.00${breakthrough.map(affix => ` + 突破 ${strength(affix)} × 0.10`).join('')}${state.upgrades.ceiling ? ' + 升级 0.50' : ''}${breakthrough.length || state.upgrades.ceiling ? '' : '，装备突破可提高上限'}。</p></div><div class="callout">词缀强度保留两位小数，抽取范围取计算区间内可达到的 0.01 刻度。装备槽和233的永久词缀参与计算，保护槽仅保存词缀。</div>`);
   }
   function openSacrifice() {
     const candidates = state.bag.filter(affix => affix.strength >= 770).sort((a, b) => a.strength - b.strength);
@@ -739,7 +763,7 @@
     });
   }
   function openHistory() {
-    const content = state.history.length ? `<p class="modal-lead">累计重洗 ${state.totalRolls.toLocaleString()} 次，保留最近 100 次发现。记录中的词缀可能已被装备、删除或消耗。</p>${state.history.map(entry => `<div class="history-row"><span>#${entry.rollNumber}</span><span class="history-affix tone-${E.TYPE_MAP[entry.type].color}">${icon(E.TYPE_MAP[entry.type].icon)}<span>${E.TYPE_MAP[entry.type].name}</span><strong>${strength(entry)}</strong></span><span class="history-drops">${entry.choiceDrop ? '<span class="tag tag-green">自选卡 +1</span>' : ''}${entry.class25Drop ? '<span class="tag">25届</span>' : ''}</span><span class="history-time">${new Date(entry.createdAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false })}</span></div>`).join('')}` : `<div class="history-empty">${icon('history')}<h3>故事，从第一次重洗开始</h3><p>你遇到的每一条词缀，都会被记录在这里。</p></div>`;
+    const content = state.history.length ? `<p class="modal-lead">累计重洗 ${state.totalRolls.toLocaleString()} 次，保留最近 100 次发现。记录中的词缀可能已被装备、删除或消耗。</p>${state.history.map(entry => `<div class="history-row"><span>#${entry.rollNumber}</span><span class="history-affix tone-${E.TYPE_MAP[entry.type].color}">${icon(E.TYPE_MAP[entry.type].icon)}<span>${E.TYPE_MAP[entry.type].name}</span><strong>${strength(entry)}</strong></span><span class="history-drops">${entry.choiceDrop ? '<span class="tag tag-green">自选卡 +1</span>' : ''}${entry.class25Drop ? '<span class="tag">25届</span>' : ''}${entry.lucky233Drop ? '<span class="tag tag-233">233</span>' : ''}</span><span class="history-time">${new Date(entry.createdAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false })}</span></div>`).join('')}` : `<div class="history-empty">${icon('history')}<h3>故事，从第一次重洗开始</h3><p>你遇到的每一条词缀，都会被记录在这里。</p></div>`;
     openModal('history', '每一次发现，都有迹可循', content);
   }
   function openSettings() {
